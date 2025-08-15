@@ -15,7 +15,6 @@ const loginFormKey = ref(0)
 
 function logout() {
   isAuthenticated.value = false
-  // Reset login form state (clears fields)
   loginFormKey.value++
 }
 
