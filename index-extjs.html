@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет товаров - Ext JS</title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        .login-panel {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-title {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        .product-title {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        /* Стили для формы входа */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+        
+        .login-form {
+            width: 400px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        
+        .login-title {
+            color: #6495ED;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #6495ED;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6495ED;
+            box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.1);
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #6495ED;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .login-button:hover {
+            background-color: #5a85d4;
+        }
+        
+        /* Стили для главного окна */
+        .main-window {
+            min-height: 100vh;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .top-bar {
+            background-color: #6495ED;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-bar-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .top-bar-button {
+            padding: 8px 16px;
+            background-color: white;
+            color: #6495ED;
+            border: 1px solid white;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .top-bar-button:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .logout-button {
+            background-color: #DD80CC;
+            color: white;
+            border-color: #DD80CC;
+        }
+        
+        .logout-button:hover {
+            background-color: #c973b8;
+        }
+        
+        .tabs-container {
+            padding: 16px;
+            flex: 1;
+        }
+        
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        
+        .tab-button {
+            padding: 8px 16px;
+            background-color: #DD80CC;
+            color: white;
+            border: 1px solid #DD80CC;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-button.active {
+            background-color: white;
+            color: #6495ED;
+            border-color: #6495ED;
+            border-bottom-color: white;
+        }
+        
+        .tab-content {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .tab-content-header {
+            background-color: #6495ED;
+            color: white;
+            padding: 12px 16px;
+        }
+        
+        .tab-content-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* Стили для таблицы товаров */
+        .products-container {
+            padding: 16px;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            color: #6495ED;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #6495ED;
+            box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.1);
+        }
+        
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .products-table th {
+            background-color: #f9fafb;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 500;
+        }
+        
+        .products-table td {
+            padding: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .product-name-link {
+            color: #6495ED;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .product-name-link:hover {
+            color: #5a85d4;
+        }
+        
+        .zero-qty {
+            background-color: #FF1744;
+            color: white;
+        }
+        
+        /* Стили для карточки товара */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-window {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background-color: #6495ED;
+            color: white;
+            padding: 16px 24px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-field {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .modal-field-label {
+            width: 120px;
+            color: #666;
+            line-height: 32px;
+        }
+        
+        .modal-field-value {
+            flex: 1;
+            line-height: 32px;
+        }
+        
+        .modal-field-input {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .modal-field-input:focus {
+            outline: none;
+            border-color: #6495ED;
+            box-shadow: 0 0 0 3px rgba(100, 149, 237, 0.1);
+        }
+        
+        .modal-footer {
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .modal-button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        
+        .modal-button.primary {
+            background-color: #6495ED;
+            color: white;
+        }
+        
+        .modal-button.primary:hover {
+            background-color: #5a85d4;
+        }
+        
+        .modal-button.secondary {
+            background-color: #DD80CC;
+            color: white;
+        }
+        
+        .modal-button.secondary:hover {
+            background-color: #c973b8;
+        }
+        
+        .modal-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Форма входа -->
+    <div id="loginForm" class="login-container">
+        <div class="login-form">
+            <h1 class="login-title">Вход</h1>
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label for="login" class="form-label">Логин</label>
+                    <input type="text" id="login" name="login" class="form-input" placeholder="Введите логин" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Введите пароль" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="login-button">Вход</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Главное окно -->
+    <div id="mainWindow" class="main-window hidden">
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="top-bar-title">Учет товаров</h1>
+                <button class="top-bar-button" onclick="openProductsTab()">Товары</button>
+            </div>
+            <button class="top-bar-button logout-button" onclick="logout()">Выход</button>
+        </div>
+        
+        <div class="tabs-container">
+            <div class="tabs-header" id="tabsHeader">
+                <!-- Вкладки будут добавляться динамически -->
+            </div>
+            <div id="tabsContent">
+                <div class="tab-content" id="defaultTabContent">
+                    <div class="tab-content-header">
+                        <h2 class="tab-content-title">Список товаров</h2>
+                    </div>
+                    <div class="products-container">
+                        <p style="color: #666; font-size: 14px;">Нажмите «Товары», чтобы открыть вкладку со списком товаров</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карточка товара -->
+    <div id="productCard" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productCardTitle">Карточка товара</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <div class="modal-field-label">ID:</div>
+                    <div class="modal-field-value" id="productId"></div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-field-label">Наименование:</div>
+                    <div class="modal-field-value" id="productDescription"></div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-field-label">Цена:</div>
+                    <input type="number" class="modal-field-input" id="productPrice" step="0.01" min="0">
+                </div>
+                <div class="modal-field">
+                    <div class="modal-field-label">Кол-во:</div>
+                    <input type="number" class="modal-field-input" id="productQty" step="1" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button primary" id="saveButton" onclick="saveProduct()" disabled>Сохранить</button>
+                <button class="modal-button secondary" onclick="closeProductCard()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные товаров
+        let products = [
+            {
+                id: 1,
+                name: 'Notebook Lenovo',
+                description: 'Ноутбук ThinkPad T460 14"FHD',
+                price: 100.0,
+                qty: 2
+            },
+            {
+                id: 2,
+                name: 'Keyboard OKLICK',
+                description: 'Клавиатура OKLICK 140M, USB',
+                price: 50.0,
+                qty: 8
+            },
+            {
+                id: 3,
+                name: 'Network adapter',
+                description: 'Сетевой адаптер WiFi D-Link',
+                price: 7.0,
+                qty: 0
+            }
+        ];
+
+        let currentProduct = null;
+        let originalPrice = 0;
+        let originalQty = 0;
+        let nextTabId = 1;
+
+        // Обработка формы входа
+        document.getElementById('loginFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            
+            if (login === 'admin' && password === 'padmin') {
+                showMainWindow();
+            } else {
+                alert('Неверный логин или пароль');
+            }
+        });
+
+        // Показать главное окно
+        function showMainWindow() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('mainWindow').classList.remove('hidden');
+        }
+
+        // Выход
+        function logout() {
+            document.getElementById('mainWindow').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('loginFormElement').reset();
+            
+            // Очищаем вкладки
+            document.getElementById('tabsHeader').innerHTML = '';
+            document.getElementById('tabsContent').innerHTML = '';
+            nextTabId = 1;
+        }
+
+        // Открыть вкладку товаров
+        function openProductsTab() {
+            const tabId = nextTabId++;
+            
+            // Создаем кнопку вкладки
+            const tabButton = document.createElement('button');
+            tabButton.className = 'tab-button active';
+            tabButton.textContent = 'Товары ' + tabId;
+            tabButton.onclick = function() {
+                // Убираем активный класс у всех вкладок
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                // Добавляем активный класс к текущей вкладке
+                this.classList.add('active');
+                
+                // Показываем содержимое вкладки
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+                document.getElementById('tabContent' + tabId).classList.remove('hidden');
+            };
+            
+            document.getElementById('tabsHeader').appendChild(tabButton);
+            
+            // Создаем содержимое вкладки
+            const tabContent = document.createElement('div');
+            tabContent.className = 'tab-content';
+            tabContent.id = 'tabContent' + tabId;
+            tabContent.innerHTML = `
+                <div class="tab-content-header">
+                    <h2 class="tab-content-title">Список товаров</h2>
+                </div>
+                <div class="products-container">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label class="filter-label">ID:</label>
+                            <input type="text" class="filter-input" id="filterId${tabId}" placeholder="Введите фильтр..." onkeydown="if(event.key==='Enter') applyFilters(${tabId})">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Описание:</label>
+                            <input type="text" class="filter-input" id="filterDesc${tabId}" placeholder="Введите фильтр..." onkeydown="if(event.key==='Enter') applyFilters(${tabId})">
+                        </div>
+                    </div>
+                    <div id="productsTable${tabId}"></div>
+                </div>
+            `;
+            
+            document.getElementById('tabsContent').appendChild(tabContent);
+            
+            // Показываем содержимое вкладки
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            tabContent.classList.remove('hidden');
+            
+            // Рендерим таблицу товаров
+            renderProductsTable(tabId);
+        }
+
+        // Применить фильтры
+        function applyFilters(tabId) {
+            const filterId = document.getElementById('filterId' + tabId).value;
+            const filterDesc = document.getElementById('filterDesc' + tabId).value.toLowerCase();
+            
+            let filteredProducts = products.filter(product => {
+                const idMatches = !filterId || String(product.id) === filterId;
+                const descMatches = !filterDesc || product.description.toLowerCase().indexOf(filterDesc) !== -1;
+                return idMatches && descMatches;
+            });
+            
+            renderProductsTable(tabId, filteredProducts);
+        }
+
+        // Рендерить таблицу товаров
+        function renderProductsTable(tabId, productsToRender = products) {
+            const tableContainer = document.getElementById('productsTable' + tabId);
+            
+            if (productsToRender.length === 0) {
+                tableContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Нет данных</p>';
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Описание</th>
+                            <th>Цена</th>
+                            <th>Кол-во</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            productsToRender.forEach(product => {
+                const qtyClass = product.qty === 0 ? 'zero-qty' : '';
+                tableHTML += `
+                    <tr>
+                        <td>${product.id}</td>
+                        <td><span class="product-name-link" onclick="openProductCard(${product.id})">${product.name}</span></td>
+                        <td>${product.description}</td>
+                        <td>${product.price.toFixed(2)}</td>
+                        <td class="${qtyClass}">${product.qty}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody></table>';
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        // Открыть карточку товара
+        function openProductCard(productId) {
+            currentProduct = products.find(p => p.id === productId);
+            if (!currentProduct) return;
+            
+            document.getElementById('productCardTitle').textContent = 'Карточка товара: ' + currentProduct.name;
+            document.getElementById('productId').textContent = currentProduct.id;
+            document.getElementById('productDescription').textContent = currentProduct.description;
+            document.getElementById('productPrice').value = currentProduct.price;
+            document.getElementById('productQty').value = currentProduct.qty;
+            
+            originalPrice = currentProduct.price;
+            originalQty = currentProduct.qty;
+            
+            document.getElementById('saveButton').disabled = true;
+            document.getElementById('productCard').classList.remove('hidden');
+            
+            // Добавляем обработчики изменений
+            document.getElementById('productPrice').oninput = checkChanges;
+            document.getElementById('productQty').oninput = checkChanges;
+        }
+
+        // Проверить изменения
+        function checkChanges() {
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const qty = parseInt(document.getElementById('productQty').value);
+            
+            const priceChanged = price !== originalPrice;
+            const qtyChanged = qty !== originalQty;
+            
+            document.getElementById('saveButton').disabled = !(priceChanged || qtyChanged);
+        }
+
+        // Сохранить товар
+        function saveProduct() {
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const qty = parseInt(document.getElementById('productQty').value);
+            
+            if (isNaN(price) || price < 0) {
+                alert('Цена должна быть неотрицательным числом');
+                return;
+            }
+            
+            if (isNaN(qty) || qty < 0 || !Number.isInteger(qty)) {
+                alert('Количество должно быть неотрицательным целым числом');
+                return;
+            }
+            
+            // Обновляем данные
+            currentProduct.price = price;
+            currentProduct.qty = qty;
+            
+            alert('Данные сохранены');
+            closeProductCard();
+            
+            // Обновляем все открытые таблицы
+            document.querySelectorAll('[id^="productsTable"]').forEach(container => {
+                const tabId = container.id.replace('productsTable', '');
+                renderProductsTable(tabId);
+            });
+        }
+
+        // Закрыть карточку товара
+        function closeProductCard() {
+            document.getElementById('productCard').classList.add('hidden');
+            currentProduct = null;
+        }
+    </script>
+</body>
+</html>
